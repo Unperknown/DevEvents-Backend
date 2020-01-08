@@ -1,0 +1,22 @@
+{
+  "name": "dev-events",
+  "version": "1.0.0",
+  "description": "A back-end server that provides APIs to DevEvents website.",
+  "main": "main.js",
+  "repository": "https://github.com/Unperknown/DevEvents-Backend.git",
+  "author": "Unperknown",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@koa/cors": "^3.0.0",
+    "dotenv": "^8.2.0",
+    "koa": "^2.11.0",
+    "koa-graphql": "^0.8.0",
+    "koa-router": "^7.4.0",
+    "mongodb": "^3.4.1"
+  },
+  "scripts": {
+    "start:dev": "NODE_PATH=./ pm2 start main.js",
+    "start:production": "NODE_PATH=./ pm2 start main.js"
+  }
+}
