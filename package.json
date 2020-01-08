@@ -16,7 +16,7 @@
     "mongodb": "^3.4.1"
   },
   "scripts": {
-    "start:dev": "NODE_PATH=./ pm2 start main.js",
-    "start:production": "NODE_PATH=./ pm2 start main.js"
+    "start:dev": "NODE_PATH=./ nodemon main.js",
+    "start:production": "NODE_PATH=./ nodemon main.js"
   }
 }
