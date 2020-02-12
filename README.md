@@ -27,7 +27,3 @@ Everyone can open an issue or pull request anytime.
 [🔗]()
 
 ## Daily Progress
-
-### 2/1 - Boosting Up for the Project
-
-현재까지 백엔드에 대한 구성을 마쳤다. GraphQL를 곧 적용할 계획이다.
