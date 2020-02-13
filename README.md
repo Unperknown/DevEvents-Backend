@@ -28,4 +28,10 @@ Everyone can open an issue or pull request anytime.
 
 ## Daily Progress
 
-### 2/13 - 프로젝트 세팅
+### 2/13 - GraphQL CRUD 설정하기
+
+GraphQL와 MongoDB와의 연동하였다.
+
+<img src="docs/graphql.png" width="1000" height="200">
+
+
