@@ -27,3 +27,5 @@ Everyone can open an issue or pull request anytime.
 [🔗]()
 
 ## Daily Progress
+
+### 2/13 - 프로젝트 세팅
