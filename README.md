@@ -34,4 +34,6 @@ GraphQL와 MongoDB와의 연동하였다.
 
 <img src="docs/graphql.png" width="1000" height="200">
 
+### 2/14 ~ - 웹 크롤링 구현하기
+
 
