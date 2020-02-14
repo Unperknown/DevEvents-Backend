@@ -1,15 +1,17 @@
 require('dotenv').config()
 
 const PORT = process.env.PORT || 8080
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/'
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/DevEvents'
 
 const Koa = require('koa')
 const Router = require('koa-router')
 const koaBody = require('koa-bodyparser')
 
+const cors = require('@koa/cors')
 const mount = require('koa-mount')
 const graphqlHTTP = require('koa-graphql')
 const schema = require('./graphql/schema')
+const api = require('./api')
 
 const mongoose = require('mongoose')
 
@@ -29,8 +31,6 @@ const app = new Koa()
 
 const router = new Router()
 
-const cors = require('@koa/cors')
-
 app.use(cors())
   .use(koaBody())
   .use(router.routes())
@@ -40,6 +40,8 @@ app.use(mount('/graphql', graphqlHTTP({
   schema: schema,
   graphiql: true
 })))
+
+router.use('', api.routes())
 
 app.listen(PORT, () => {
   console.log(`Server is ready at localhost:${PORT}`)
