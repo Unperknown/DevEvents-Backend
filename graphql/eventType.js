@@ -1,6 +1,6 @@
 const graphql = require('graphql')
 
-const { GraphQLObjectType, GraphQLInt, GraphQLString } = graphql
+const { GraphQLObjectType, GraphQLString } = graphql
 
 const EventType = new GraphQLObjectType({
   name: 'Event',
@@ -8,7 +8,7 @@ const EventType = new GraphQLObjectType({
     title: { type: GraphQLString },
     date: { type: GraphQLString },
     location: { type: GraphQLString },
-    price: { type: GraphQLInt }
+    price: { type: GraphQLString }
   })
 })
 

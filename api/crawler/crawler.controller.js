@@ -1,14 +1,69 @@
 const puppeteer = require('puppeteer')
 const cheerio = require('cheerio')
 
-const url = 'https://www.festa.io/events'
-
+const FESTA_URL = 'https://www.festa.io/events'
 const Event = require('models/event')
 
-const crawlData = async (url) => {
+exports.getAllEventData = async (ctx) => {
+  let links = await fetchAllLinks()
+  let events = []
+
+  for (let i in links) {
+    let event = await fetchDataFromURL(links[i])
+
+    events.push(event)
+  }
+
+  let fetched = await Event.fetchEventsData(events)
+
+  ctx.assert(isEmptyArray(fetched), 'Crawled events\' data weren\'t completely fetched to database.')
+  
+  ctx.body = events
+}
+
+const fetchAllLinks = async () => {
+  let links = []
+
+  let $ = await crawlRenderedHTMLFromURL(FESTA_URL)
+
+  $('div[id="root"] > div > div > div[class*="Desktop"] > div > div > div')
+    .each((index, element) => {
+      let href = $(element)
+        .find('div > div > a')
+        .attr('href')
+      
+      let id = href.substring(href.indexOf('/', 1) + 1)
+
+      links.push(FESTA_URL + `/${id}`)
+    })
+
+  return links
+}
+
+const fetchDataFromURL = async (url) => {
+  let $ = await crawlRenderedHTMLFromURL(url)
+
+  let foundInfo = $('div[id="root"] > div > div[class*="Desktop"]')
+
+  let title = foundInfo.find('h1[class*="Title"]').text()
+  let date = foundInfo.find('div[class*="DateInfo"] > div[class*="MetaText"]').text()
+  let location = foundInfo.find('div[class*="VenueText"]').text()
+  let price = foundInfo.find('div[class*="Price"]').text()
+
+  let event = {
+    title: title,
+    date: date,
+    location: location,
+    price: price
+  }
+
+  return event
+}
+
+const crawlRenderedHTMLFromURL = async (url) => {
   console.log('Crawling...')
 
-  let data = ''
+  let html = ''
 
   await puppeteer
     .launch()
@@ -20,37 +75,20 @@ const crawlData = async (url) => {
         return page.content()
       })
     })
-    .then(html => {
-      let $ = cheerio.load(html)
-
-      let events = []
-
-      $('div[id="root"] > div > div > div[class*="Desktop"] > div > div > div').each((index, element) => {
-        let title = $(element).find('h3').text()
-        let date = $(element).find('time').text()
-
-        console.log(`Title: ${title}`)
-        console.log(`Date: ${date}`)
-
-        let info = {
-          title: title,
-          date: date
-        }
-
-        events.push(info)
-      })
-
-      data = events
+    .then(_html => {
+      html = _html
     })
     .catch(err => {
       console.log(err)
     })
 
-  return data
+  console.log('Successfully Crawled Data!')
+
+  let $ = cheerio.load(html)
+
+  return $
 }
 
-exports.getAllEventData = async (ctx) => {
-  let data = await crawlData(url)
-
-  ctx.body = data
+const isEmptyArray = array => {
+  return Array.isArray(array) && array.length
 }

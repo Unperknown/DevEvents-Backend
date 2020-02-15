@@ -1,4 +1,4 @@
-const { GraphQLObjectType, GraphQLInt, GraphQLString } = require('graphql');
+const { GraphQLObjectType, GraphQLString } = require('graphql');
 const eventGraphQLType = require('./eventType');
 const event = require('models/event');
 
@@ -11,7 +11,7 @@ const Mutation = new GraphQLObjectType({
         title: { type: GraphQLString },
         date: { type: GraphQLString },
         location: { type: GraphQLString },
-        price: { type: GraphQLInt }
+        price: { type: GraphQLString }
       },
       resolve(parent, args) {
         const newEvent = new event({
@@ -30,7 +30,7 @@ const Mutation = new GraphQLObjectType({
         title: { type: GraphQLString },
         date: { type: GraphQLString },
         location: { type: GraphQLString },
-        price: { type: GraphQLInt }
+        price: { type: GraphQLString }
       },
       resolve(parent, args) {
         return event.findById(args.id)
