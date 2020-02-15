@@ -1,12 +1,12 @@
 const puppeteer = require('puppeteer')
 const cheerio = require('cheerio')
 
-const FESTA_URL = 'https://www.festa.io/events'
+const FESTA_URL = 'https://www.festa.io'
 const Event = require('models/event')
 
 exports.getAllEventData = async (ctx) => {
-  let links = await fetchAllLinks()
   let events = []
+  let links = await fetchAllLinks()
 
   for (let i in links) {
     let event = await fetchDataFromURL(links[i])
@@ -17,31 +17,29 @@ exports.getAllEventData = async (ctx) => {
   let fetched = await Event.fetchEventsData(events)
 
   ctx.assert(isEmptyArray(fetched), 'Crawled events\' data weren\'t completely fetched to database.')
-  
+
   ctx.body = events
 }
 
 const fetchAllLinks = async () => {
   let links = []
 
-  let $ = await crawlRenderedHTMLFromURL(FESTA_URL)
+  let $ = await cheeriofiedHTML(FESTA_URL + '/events')
 
   $('div[id="root"] > div > div > div[class*="Desktop"] > div > div > div')
     .each((index, element) => {
       let href = $(element)
         .find('div > div > a')
         .attr('href')
-      
-      let id = href.substring(href.indexOf('/', 1) + 1)
 
-      links.push(FESTA_URL + `/${id}`)
+      links.push(FESTA_URL + href)
     })
 
   return links
 }
 
 const fetchDataFromURL = async (url) => {
-  let $ = await crawlRenderedHTMLFromURL(url)
+  let $ = await cheeriofiedHTML(url)
 
   let foundInfo = $('div[id="root"] > div > div[class*="Desktop"]')
 
@@ -60,31 +58,17 @@ const fetchDataFromURL = async (url) => {
   return event
 }
 
-const crawlRenderedHTMLFromURL = async (url) => {
-  console.log('Crawling...')
+const cheeriofiedHTML = async url => {
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
 
-  let html = ''
+  const html = await page.goto(url)
+    .then(async () => await page.content())
+    .catch(err => console.log(err))
 
-  await puppeteer
-    .launch()
-    .then(browser => {
-      return browser.newPage()
-    })
-    .then(page => {
-      return page.goto(url).then(() => {
-        return page.content()
-      })
-    })
-    .then(_html => {
-      html = _html
-    })
-    .catch(err => {
-      console.log(err)
-    })
+  await browser.close()
 
-  console.log('Successfully Crawled Data!')
-
-  let $ = cheerio.load(html)
+  const $ = cheerio.load(html)
 
   return $
 }
