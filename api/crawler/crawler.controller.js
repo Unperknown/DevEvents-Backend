@@ -1,30 +1,50 @@
-const puppeteer = require('puppeteer')
+const FESTA_URL = 'https://www.festa.io'
+
 const cheerio = require('cheerio')
 
-const FESTA_URL = 'https://www.festa.io'
-const Event = require('models/event')
+const Browser = require('lib/browser')
 
-exports.getAllEventData = async (ctx) => {
-  let events = []
-  let links = await fetchAllLinks()
+const EventSchema = require('models/event')
 
-  for (let i in links) {
-    let event = await fetchDataFromURL(links[i])
+exports.getAllEventData = async function(ctx) {
+  console.time('Whole Crawling Process')
+  let events = await crawlEventData()
+  console.timeEnd('Whole Crawling Process')
 
-    events.push(event)
-  }
-
-  let fetched = await Event.fetchEventsData(events)
+  let fetched = await EventSchema.fetchEventsData(events)
 
   ctx.assert(isEmptyArray(fetched), 'Crawled events\' data weren\'t completely fetched to database.')
 
   ctx.body = events
 }
 
-const fetchAllLinks = async () => {
+async function crawlEventData() {
+  console.time('Launching Browser')
+  await Browser.launch()
+  console.timeEnd('Launching Browser')
+
+  console.time('Get Links')
+  let links = (await Browser.processPage(FESTA_URL + '/events', getLinks))[0]
+  console.timeEnd('Get Links')
+
+  console.log('Gotten Links')
+  console.log(links)
+
+  console.time('Crawling Data')
+  let events = await Browser.processPage(links, fetchData)
+  console.timeEnd('Crawling Data')
+
+  console.time('Closing Browser')
+  await Browser.close()
+  console.timeEnd('Closing Browser')
+
+  return events
+}
+
+async function getLinks(html) {
   let links = []
 
-  let $ = await cheeriofiedHTML(FESTA_URL + '/events')
+  let $ = cheerio.load(html)
 
   $('div[id="root"] > div > div > div[class*="Desktop"] > div > div > div')
     .each((index, element) => {
@@ -38,8 +58,10 @@ const fetchAllLinks = async () => {
   return links
 }
 
-const fetchDataFromURL = async (url) => {
-  let $ = await cheeriofiedHTML(url)
+async function fetchData(html) {
+  let $ = cheerio.load(html)
+
+  console.log(html)
 
   let foundInfo = $('div[id="root"] > div > div[class*="Desktop"]')
 
@@ -58,21 +80,6 @@ const fetchDataFromURL = async (url) => {
   return event
 }
 
-const cheeriofiedHTML = async url => {
-  const browser = await puppeteer.launch()
-  const page = await browser.newPage()
-
-  const html = await page.goto(url)
-    .then(async () => await page.content())
-    .catch(err => console.log(err))
-
-  await browser.close()
-
-  const $ = cheerio.load(html)
-
-  return $
-}
-
-const isEmptyArray = array => {
+function isEmptyArray(array) {
   return Array.isArray(array) && array.length
 }
