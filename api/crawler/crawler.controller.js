@@ -19,24 +19,13 @@ exports.getAllEventData = async function(ctx) {
 }
 
 async function crawlEventData() {
-  console.time('Launching Browser')
   await Browser.launch()
-  console.timeEnd('Launching Browser')
 
-  console.time('Get Links')
-  let links = (await Browser.processPage(FESTA_URL + '/events', getLinks))[0]
-  console.timeEnd('Get Links')
+  let links = await Browser.processPage(FESTA_URL + '/events', getLinks)
 
-  console.log('Gotten Links')
-  console.log(links)
-
-  console.time('Crawling Data')
   let events = await Browser.processPage(links, fetchData)
-  console.timeEnd('Crawling Data')
 
-  console.time('Closing Browser')
   await Browser.close()
-  console.timeEnd('Closing Browser')
 
   return events
 }
@@ -60,8 +49,6 @@ async function getLinks(html) {
 
 async function fetchData(html) {
   let $ = cheerio.load(html)
-
-  console.log(html)
 
   let foundInfo = $('div[id="root"] > div > div[class*="Desktop"]')
 
