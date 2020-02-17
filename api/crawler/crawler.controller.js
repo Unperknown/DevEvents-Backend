@@ -20,14 +20,15 @@ async function crawlEventData() {
   })
 
   const links = await cluster.execute('https://www.festa.io/events', fetchLinks)
-  const htmls = []
+  
+  let events = []
 
   await cluster.task(async ({ page, data: url }) => {
     await page.goto(url)
     await page.waitForSelector('div[id="root"] > div > div[class*="DesktopView"]')
 
     let html = await page.content()
-    htmls.push(html)
+    events.push({ html: html, hyperLink: url })
   })
 
   links.map(link => cluster.queue(link))
@@ -35,7 +36,7 @@ async function crawlEventData() {
   await cluster.idle()
   await cluster.close()
 
-  let events = htmls.map(html => fetchData(html))
+  events = events.map(event => fetchData(event))
 
   return events
 }
@@ -58,7 +59,7 @@ const fetchLinks = async ({ page, data: url }) => {
   return links
 }
 
-function fetchData(html) {
+function fetchData({ html: html, hyperLink: url}) {
   let $ = cheerio.load(html)
 
   let foundInfo = $('div[id="root"] > div > div[class*="DesktopView"]')
@@ -68,13 +69,16 @@ function fetchData(html) {
   let location = foundInfo.find('div[class*="VenueText"]').text()
   let price = foundInfo.find('div[class*="Price"]').text()
   let imageLink = foundInfo.find('div[class*="MainImage"]').attr('src')
+  let isValid = !foundInfo.find('div[class*="TicketBuyButton"] > a').prop('disabled')
 
   let event = {
     title: title,
     date: date,
     location: location,
     price: price,
-    imageLink: imageLink
+    imageLink: imageLink,
+    hyperLink: url,
+    isValid: isValid
   }
 
   return event

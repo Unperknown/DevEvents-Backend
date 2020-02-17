@@ -6,7 +6,9 @@ const Event = new Schema({
   date: String,
   location: String,
   price: String,
-  imageLink: String
+  imageLink: String,
+  hyperLink: String,
+  isValid: Boolean
 })
 
 Event.statics.fetchEventsData = async function (events) {

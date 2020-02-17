@@ -1,4 +1,4 @@
-const { GraphQLObjectType, GraphQLString } = require('graphql');
+const { GraphQLObjectType, GraphQLString, GraphQLBoolean } = require('graphql');
 const eventGraphQLType = require('./eventType');
 const event = require('models/event');
 
@@ -12,7 +12,9 @@ const Mutation = new GraphQLObjectType({
         date: { type: GraphQLString },
         location: { type: GraphQLString },
         price: { type: GraphQLString },
-        imageLink: { type: GraphQLString }
+        imageLink: { type: GraphQLString },
+        hyperLink: { type: GraphQLString },
+        isValid: { type: GraphQLBoolean }
       },
       resolve(parent, args) {
         const newEvent = new event({
@@ -20,7 +22,9 @@ const Mutation = new GraphQLObjectType({
           date: args.date,
           location: args.location,
           price: args.price,
-          imageLink: args.imageLink
+          imageLink: args.imageLink,
+          hyperLink: args.hyperLink,
+          isValid: args.isValid
         })
 
         return newEvent.save()
@@ -33,7 +37,9 @@ const Mutation = new GraphQLObjectType({
         date: { type: GraphQLString },
         location: { type: GraphQLString },
         price: { type: GraphQLString },
-        imageLink: { type: GraphQLString }
+        imageLink: { type: GraphQLString },
+        hyperLink: { type: GraphQLString },
+        isValid: { type: GraphQLBoolean }
       },
       resolve(parent, args) {
         return event.findById(args.id)
@@ -43,6 +49,8 @@ const Mutation = new GraphQLObjectType({
             event.location = args.location
             event.price = args.price
             event.imageLink = args.imageLink
+            event.hyperLink = args.hyperLink
+            event.isValid = args.isValid
 
             return event.save()
 
