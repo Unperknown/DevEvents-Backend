@@ -1,12 +1,11 @@
 const FESTA_URL = 'https://www.festa.io'
 
 const cheerio = require('cheerio')
-
-const Browser = require('lib/browser')
+const { Cluster } = require('puppeteer-cluster')
 
 const EventSchema = require('models/event')
 
-exports.getAllEventData = async function(ctx) {
+exports.getAllEventData = async function (ctx) {
   console.time('Whole Crawling Process')
   let events = await crawlEventData()
   console.timeEnd('Whole Crawling Process')
@@ -19,35 +18,49 @@ exports.getAllEventData = async function(ctx) {
 }
 
 async function crawlEventData() {
-  await Browser.launch()
+  const cluster = await Cluster.launch({
+    concurrency: Cluster.CONCURRENCY_CONTEXT,
+    maxConcurrency: 5,
+  })
 
-  let links = await Browser.processPage(FESTA_URL + '/events', getLinks)
+  const links = await cluster.execute(FESTA_URL + '/events', fetchLinks)
+  const htmls = []
 
-  let events = await Browser.processPage(links, fetchData)
+  await cluster.task(async ({ page, data: url }) => {
+    await page.goto(url, { waitUntil: 'networkidle2' })
+    htmls.push(await page.content())
+  })
 
-  await Browser.close()
+  links.map(link => cluster.queue(link))
+
+  await cluster.idle()
+  await cluster.close()
+
+  let events = htmls.map(html => fetchData(html))
 
   return events
 }
 
-async function getLinks(html) {
+const fetchLinks = async ({ page, data: url }) => {
   let links = []
 
-  let $ = cheerio.load(html)
+  await page.goto(url)
+
+  let $ = cheerio.load(await page.content())
 
   $('div[id="root"] > div > div > div[class*="Desktop"] > div > div > div')
-    .each((index, element) => {
-      let href = $(element)
-        .find('div > div > a')
-        .attr('href')
+  .each((index, element) => {
+    let href = $(element)
+      .find('div > div > a')
+      .attr('href')
 
-      links.push(FESTA_URL + href)
-    })
+    links.push(FESTA_URL + href)
+  })
 
   return links
 }
 
-async function fetchData(html) {
+function fetchData(html) {
   let $ = cheerio.load(html)
 
   let foundInfo = $('div[id="root"] > div > div[class*="Desktop"]')

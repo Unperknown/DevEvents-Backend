@@ -652,7 +652,7 @@ debug@3.1.0, debug@~3.1.0:
   dependencies:
     ms "2.0.0"
 
-debug@4, debug@^4.0.1, debug@^4.1.0:
+debug@4, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.1.1.tgz#3b72260255109c6b589cee050f1d516139664791"
   integrity sha512-pYAIzeRo8J6KPEaJ0VWOh5Pzkbw/RetuzehGM7QRRX5he4fPHx2rdKMB256ehJCkX+XRQm16eZLqLNS8RSZXZw==
@@ -1402,6 +1402,13 @@ proxy-from-env@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/proxy-from-env/-/proxy-from-env-1.0.0.tgz#33c50398f70ea7eb96d21f7b817630a55791c7ee"
   integrity sha1-M8UDmPcOp+uW0h97gXYwpVeRx+4=
+
+puppeteer-cluster@^0.19.0:
+  version "0.19.0"
+  resolved "https://registry.yarnpkg.com/puppeteer-cluster/-/puppeteer-cluster-0.19.0.tgz#ffd030bc16c51169e2cdb3e24d084d4d4edd9fd9"
+  integrity sha512-3b1szuwmMK7lIrROT8rcmrBEYJfPbLiVBgI5B/hzlqEFSOkb9yJgLKz9C2mjFyfIo8kALlnLyv38a0WbzMIazw==
+  dependencies:
+    debug "^4.1.1"
 
 puppeteer@^2.1.1:
   version "2.1.1"
