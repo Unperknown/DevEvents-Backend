@@ -11,7 +11,8 @@ const Mutation = new GraphQLObjectType({
         title: { type: GraphQLString },
         date: { type: GraphQLString },
         location: { type: GraphQLString },
-        price: { type: GraphQLString }
+        price: { type: GraphQLString },
+        imageLink: { type: GraphQLString }
       },
       resolve(parent, args) {
         const newEvent = new event({
@@ -19,6 +20,7 @@ const Mutation = new GraphQLObjectType({
           date: args.date,
           location: args.location,
           price: args.price,
+          imageLink: args.imageLink
         })
 
         return newEvent.save()
@@ -30,7 +32,8 @@ const Mutation = new GraphQLObjectType({
         title: { type: GraphQLString },
         date: { type: GraphQLString },
         location: { type: GraphQLString },
-        price: { type: GraphQLString }
+        price: { type: GraphQLString },
+        imageLink: { type: GraphQLString }
       },
       resolve(parent, args) {
         return event.findById(args.id)
@@ -39,6 +42,7 @@ const Mutation = new GraphQLObjectType({
             event.date = args.date
             event.location = args.location
             event.price = args.price
+            event.imageLink = args.imageLink
 
             return event.save()
 

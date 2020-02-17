@@ -8,7 +8,8 @@ const EventType = new GraphQLObjectType({
     title: { type: GraphQLString },
     date: { type: GraphQLString },
     location: { type: GraphQLString },
-    price: { type: GraphQLString }
+    price: { type: GraphQLString },
+    imageLink: { type: GraphQLString }
   })
 })
 

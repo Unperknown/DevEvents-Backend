@@ -1,5 +1,3 @@
-const FESTA_URL = 'https://www.festa.io'
-
 const cheerio = require('cheerio')
 const { Cluster } = require('puppeteer-cluster')
 
@@ -18,15 +16,18 @@ exports.getAllEventData = async function (ctx) {
 async function crawlEventData() {
   const cluster = await Cluster.launch({
     concurrency: Cluster.CONCURRENCY_CONTEXT,
-    maxConcurrency: 5,
+    maxConcurrency: 3,
   })
 
-  const links = await cluster.execute(FESTA_URL + '/events', fetchLinks)
+  const links = await cluster.execute('https://www.festa.io/events', fetchLinks)
   const htmls = []
 
   await cluster.task(async ({ page, data: url }) => {
-    await page.goto(url, { waitUntil: 'networkidle2' })
-    htmls.push(await page.content())
+    await page.goto(url)
+    await page.waitForSelector('div[id="root"] > div > div[class*="DesktopView"]')
+
+    let html = await page.content()
+    htmls.push(html)
   })
 
   links.map(link => cluster.queue(link))
@@ -43,17 +44,16 @@ const fetchLinks = async ({ page, data: url }) => {
   let links = []
 
   await page.goto(url)
+  await page.waitForSelector('div[id="root"] > div > div > div[class*="DesktopView"]')
+  
+  let html = await page.content()
+  let $ = cheerio.load(html)
 
-  let $ = cheerio.load(await page.content())
-
-  $('div[id="root"] > div > div > div[class*="Desktop"] > div > div > div')
-  .each((index, element) => {
-    let href = $(element)
-      .find('div > div > a')
-      .attr('href')
-
-    links.push(FESTA_URL + href)
-  })
+  $('div[id="root"] > div > div > div[class*="DesktopView"] > div > div > div > div > div > a')
+    .each((index, element) => {
+      let href = $(element).attr('href')
+      links.push('https://www.festa.io' + href)
+    })
 
   return links
 }
@@ -61,18 +61,20 @@ const fetchLinks = async ({ page, data: url }) => {
 function fetchData(html) {
   let $ = cheerio.load(html)
 
-  let foundInfo = $('div[id="root"] > div > div[class*="Desktop"]')
+  let foundInfo = $('div[id="root"] > div > div[class*="DesktopView"]')
 
   let title = foundInfo.find('h1[class*="Title"]').text()
   let date = foundInfo.find('div[class*="DateInfo"] > div[class*="MetaText"]').text()
   let location = foundInfo.find('div[class*="VenueText"]').text()
   let price = foundInfo.find('div[class*="Price"]').text()
+  let imageLink = foundInfo.find('div[class*="MainImage"]').attr('src')
 
   let event = {
     title: title,
     date: date,
     location: location,
-    price: price
+    price: price,
+    imageLink: imageLink
   }
 
   return event
