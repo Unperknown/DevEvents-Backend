@@ -6,9 +6,7 @@ const { Cluster } = require('puppeteer-cluster')
 const EventSchema = require('models/event')
 
 exports.getAllEventData = async function (ctx) {
-  console.time('Whole Crawling Process')
   let events = await crawlEventData()
-  console.timeEnd('Whole Crawling Process')
 
   let fetched = await EventSchema.fetchEventsData(events)
 
