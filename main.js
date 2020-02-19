@@ -43,7 +43,8 @@ app.use(cors())
   .use(router.allowedMethods())
 
 app.listen(PORT, () => {
-  console.log(`Server is ready at localhost:${PORT}${server.graphqlPath}`)
+  console.log(`Server is ready at localhost:${PORT}`)
+  console.log(`GraphiQL is ready at localhost:${PORT}${server.graphqlPath}`)
 })
 
 app.on('error', err => {
