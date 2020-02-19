@@ -1,4 +1,4 @@
-const { Event } = require('./Event/graphql');
+const Event = require('./Event');
 
 module.exports = {
   Event,
