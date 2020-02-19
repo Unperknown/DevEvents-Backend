@@ -58,4 +58,4 @@ Cons
 
 Apollo Server를 적용하여 유연한 쿼리 및 뮤테이션이 이루어질 수 있도록 하였다.
 
-<img src="docs/3.png" width="500" height="200">
+<img src="docs/3.png" width="750" height="300">
