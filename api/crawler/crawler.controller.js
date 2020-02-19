@@ -1,12 +1,12 @@
 const cheerio = require('cheerio')
 const { Cluster } = require('puppeteer-cluster')
 
-const EventSchema = require('models/event')
+const Event = require('models/event/mongodb')
 
 exports.getAllEventData = async function (ctx) {
   let events = await crawlEventData()
 
-  let fetched = await EventSchema.fetchEventsData(events)
+  let fetched = await Event.fetchEventsData(events)
 
   ctx.assert(isEmptyArray(fetched), 'Crawled events\' data weren\'t completely fetched to database.')
 

@@ -4,6 +4,6 @@ const api = new Router()
 
 const crawler = require('./crawler')
 
-api.use('/crawler', crawler.routes())
+api.use('/crawl', crawler.routes())
 
 module.exports = api

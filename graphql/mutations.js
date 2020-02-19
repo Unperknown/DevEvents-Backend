@@ -64,11 +64,10 @@ const Mutation = new GraphQLObjectType({
       args: {
         id: { type: GraphQLString }
       },
-      resolve(parent, args) {
-        return event.findOneAndDelete(args.id).exec()
-          .then(event => event.remove())
-          .then(deletedEvent => deletedEvent)
-          .catch(err => console.log(err))
+      async resolve(parent, args) {
+        let result = await event.findOneAndDelete({ _id: args.id })
+        
+        return result
       }
     }
   }

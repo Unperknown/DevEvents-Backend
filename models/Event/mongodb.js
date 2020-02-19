@@ -17,6 +17,12 @@ Event.statics.fetchEventsData = async function (events) {
   return result
 }
 
+Event.statics.loadEventsData = async function () {
+  let result = await this.find({})
+
+  return result
+}
+
 const _event = mongoose.models.Event || mongoose.model('Event', Event, 'Event')
 
 module.exports = _event
