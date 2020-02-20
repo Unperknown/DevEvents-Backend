@@ -5,28 +5,28 @@
 ![GitHub](https://img.shields.io/github/license/Unperknown/DevEvents)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Unperknown/DevEvents-Backend)
 
-# Backend for DevEvents
+# DevEvents-Backend
 
-This website lets people know what events related to developers are held every month.
+DevEvents는 곧 진행될 개발 관련 행사를 알려주는 웹 사이트입니다. 백엔드 부분은 GraphQL 구조가 사용되었으며 Koa 기반으로 작동합니다.
 
-## 👪 Contributor(s)
+## 👪 기여자
 
-Everyone can open an issue or pull request anytime.
+이 프로젝트를 더 좋은 방향으로 만들고 싶다면 이슈나 PR을 열어주시기 바랍니다!
 
 - [🔗Unperknown](https://github.com/Unperknown)
 
-## 🔑 Technology Stacks
+## 🔑 기술 스택
 
 <img src="https://raw.githubusercontent.com/koajs/koa/HEAD/docs/logo.png" width="200" height="200" />
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/GraphQL_Logo.svg/1024px-GraphQL_Logo.svg.png" width="200" height="200">
 <img src="https://www.nginx.com/wp-content/uploads/2018/08/NGINX-logo-rgb-large.png" width="200" height="80" />
 <img src="https://www.docker.com/sites/default/files/d8/2019-07/vertical-logo-monochromatic.png" width="200" height="190">
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/GraphQL_Logo.svg/1024px-GraphQL_Logo.svg.png" width="200" height="200">
 
-## API Documentation
+## 📄 API 문서
 
 [🔗]()
 
-## Daily Progress
+## 📅 개발 일지
 
 ### 2/13 - GraphQL CRUD 설정하기
 
@@ -50,7 +50,7 @@ Pros
 - 하나의 프로세스에서 처리할 수 있도록 하여 메모리 사용을 최대한 줄일 수 있었다.
 
 Cons
-- 크롤링 API에 대해서 엔드포인트, 예외 처리를 추가적으로 구현해야 한다.
+- 크롤링 API에 대해서 예외 처리를 추가적으로 구현해야 한다.
 
 <img src="docs/2.png" width="550" height="430">
 
@@ -59,3 +59,5 @@ Cons
 Apollo Server를 적용하여 유연한 쿼리 및 뮤테이션이 이루어질 수 있도록 하였다.
 
 <img src="docs/3.png" width="750" height="300">
+
+### 2/21 - 1차 배포
