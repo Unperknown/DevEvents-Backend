@@ -2,7 +2,7 @@
 ![HitCount](http://hits.dwyl.io/Unperknown/DevEvents-Backend.svg)
 ![Bitbucket open issues](https://img.shields.io/github/issues/Unperknown/DevEvents-Backend)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/Unperknown/DevEvents-Backend)
-![GitHub](https://img.shields.io/github/license/Unperknown/DevEvents)
+![GitHub](https://img.shields.io/github/license/Unperknown/DevEvents-Backend)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Unperknown/DevEvents-Backend)
 
 # DevEvents-Backend

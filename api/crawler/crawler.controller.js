@@ -41,7 +41,7 @@ async function crawlEventData() {
   return events
 }
 
-const fetchLinks = async ({ page, data: url }) => {
+async function fetchLinks({ page, data: url }) {
   let links = []
 
   await page.goto(url)
