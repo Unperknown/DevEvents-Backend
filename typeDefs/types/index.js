@@ -1,4 +1,4 @@
-const { eventType } = require("./eventType")
+const { eventType } = require('./eventType')
 
 module.exports = {
   eventType,

@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server-koa');
+const { gql } = require('apollo-server-koa')
 
 const eventType = gql`
   type Event {
@@ -20,7 +20,7 @@ const eventType = gql`
     hyperLink: String,
     isValid: Boolean
   }
-`;
+`
 
 module.exports = {
   eventType,
