@@ -1,19 +1,19 @@
 const cheerio = require('cheerio')
 const { Cluster } = require('puppeteer-cluster')
 
-const Crawler = {
-  fetchCrawledData: async function () {
-    let events = await crawlEventData()
+const FestaCrawler = {
+  fetch: async function () {
+    let events = await crawlData()
 
     return events
   }
 }
 
 module.exports = {
-  Crawler,
+  FestaCrawler,
 }
 
-async function crawlEventData() {
+async function crawlData() {
   const cluster = await Cluster.launch({
     concurrency: Cluster.CONCURRENCY_CONTEXT,
     maxConcurrency: 3,
@@ -82,8 +82,4 @@ function fetchData({ html: html, hyperLink: url }) {
   }
 
   return event
-}
-
-function isFetched(fetched) {
-  return Array.isArray(fetched) && fetch.length
 }

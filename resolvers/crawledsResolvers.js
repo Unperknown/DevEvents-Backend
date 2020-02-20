@@ -1,9 +1,9 @@
 const _ = require('lodash')
 
-const { ApolloError, UserInputError } = require('apollo-server-koa')
+const { ApolloError } = require('apollo-server-koa')
 
 const { Crawled } = require('models')
-const { Crawler } = require('controllers/crawler')
+const { FestaCrawler } = require('controllers')
 
 const crawledsResolvers = {
   Query: {
@@ -12,7 +12,7 @@ const crawledsResolvers = {
   },
   Mutation: {
     fetchCrawledData: async () => {
-      let crawled = await Crawler.fetchCrawledData()
+      let crawled = await FestaCrawler.fetch()
 
       let state = await Crawled.deleteMany({})
 
