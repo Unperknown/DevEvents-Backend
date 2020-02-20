@@ -1,21 +1,21 @@
 const { gql } = require('apollo-server-koa')
 
-const eventType = gql`
-  type Event {
+const crawledType = gql`
+  type Crawled {
     title: String
     date: String
     location: String
-    price: Int
+    price: String
     imageLink: String
     hyperLink: String
     isValid: Boolean
   }
 
-  input EventInput {
+  input CrawledInput {
     title: String
     date: String
     location: String
-    price: Int
+    price: String
     imageLink: String
     hyperLink: String
     isValid: Boolean
@@ -23,5 +23,5 @@ const eventType = gql`
 `
 
 module.exports = {
-  eventType,
+  crawledType,
 }

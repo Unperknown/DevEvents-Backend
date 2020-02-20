@@ -1,8 +1,8 @@
 const { query } = require('./query')
 const { mutation } = require('./mutation')
-const { eventType } = require('./types')
+const { eventType, crawledType } = require('./types')
 
-const typeDefs = [query, mutation, eventType]
+const typeDefs = [query, mutation, eventType, crawledType]
 
 module.exports = {
   typeDefs,

@@ -12,14 +12,12 @@ const cors = require('@koa/cors')
 const mongoose = require('mongoose')
 
 const { ApolloServer } = require('apollo-server-koa')
-const { typeDefs } = require("./typeDefs")
-const { resolvers } = require("./resolvers")
+const { typeDefs } = require('./typeDefs')
+const { resolvers } = require('./resolvers')
 
 const app = new Koa()
 const router = new Router()
 const server = new ApolloServer({ typeDefs, resolvers })
-
-const api = require('./api')
 
 mongoose.Promise = global.Promise
 
@@ -28,14 +26,12 @@ mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(response => {
-  console.log('Successfully connected to mongodb')
+  console.log('Successfully connected to mongoDB')
 }).catch(e => {
   console.error(e)
 })
 
 server.applyMiddleware({ app })
-
-router.use('/api', api.routes())
 
 app.use(cors())
   .use(koaBody())

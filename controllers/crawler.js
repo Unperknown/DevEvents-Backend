@@ -1,16 +1,16 @@
 const cheerio = require('cheerio')
 const { Cluster } = require('puppeteer-cluster')
 
-const { Event } = require('models')
+const Crawler = {
+  fetchCrawledData: async function () {
+    let events = await crawlEventData()
 
-exports.getAllEventData = async function (ctx) {
-  let events = await crawlEventData()
+    return events
+  }
+}
 
-  let fetched = await Event.insertMany(events)
-
-  ctx.assert(isEmptyArray(fetched), 'Crawled events\' data weren\'t completely fetched to database.')
-
-  ctx.body = events
+module.exports = {
+  Crawler,
 }
 
 async function crawlEventData() {
@@ -20,7 +20,7 @@ async function crawlEventData() {
   })
 
   const links = await cluster.execute('https://www.festa.io/events', fetchLinks)
-  
+
   let events = []
 
   await cluster.task(async ({ page, data: url }) => {
@@ -46,7 +46,7 @@ async function fetchLinks({ page, data: url }) {
 
   await page.goto(url)
   await page.waitForSelector('div[id="root"] > div > div > div[class*="DesktopView"]')
-  
+
   let html = await page.content()
   let $ = cheerio.load(html)
 
@@ -59,7 +59,7 @@ async function fetchLinks({ page, data: url }) {
   return links
 }
 
-function fetchData({ html: html, hyperLink: url}) {
+function fetchData({ html: html, hyperLink: url }) {
   let $ = cheerio.load(html)
 
   let foundInfo = $('div[id="root"] > div > div[class*="DesktopView"]')
@@ -84,6 +84,6 @@ function fetchData({ html: html, hyperLink: url}) {
   return event
 }
 
-function isEmptyArray(array) {
-  return Array.isArray(array) && array.length
+function isFetched(fetched) {
+  return Array.isArray(fetched) && fetch.length
 }

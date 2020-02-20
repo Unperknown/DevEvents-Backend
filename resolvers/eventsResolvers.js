@@ -17,8 +17,8 @@ const eventsResolvers = {
     updateEvent: async (_, { id, event }) => {
       let state = await Event.updateOne({ _id: id }, { $set: event })
 
-      if (state.n !== 1 || state.nModified !== 1 || state.ok !== 1) {
-        throw new UserInputError('Requested Data was not completely updated!')
+      if (!isUpdated(state)) {
+        throw new UserInputError('Requested data was not completely updated!')
       }
 
       let updated = await Event.findOne({ _id: id })
@@ -28,6 +28,10 @@ const eventsResolvers = {
     removeEvent: async (_, { id }) => {
       let result = await Event.findOneAndDelete({ _id: id })
 
+      if (!isRemoved(result)) {
+        throw new UserInputError('Requested data was not completely removed!')
+      }
+
       return result
     }
   }
@@ -35,4 +39,12 @@ const eventsResolvers = {
 
 module.exports = {
   eventsResolvers,
+}
+
+function isUpdated(state) {
+  return state.n === 1 && state.nModified === 1 && state.ok === 1
+}
+
+function isRemoved(result) {
+  return !_.isEmpty(result)
 }
