@@ -2,7 +2,15 @@ const { Requestor } = require('models')
 
 const requestorsResolvers = {
   Query: {
-    requestors: async () => await Requestor.find({}),
+    requestors: async (parent, args, { authenticated }) => {
+      if (!authenticated) {
+        throw new AuthenticationError('This query should be proceeded after authentication')
+      }
+
+      let requestors = await Requestor.find({})
+
+      return requestors
+    },
   },
 }
 

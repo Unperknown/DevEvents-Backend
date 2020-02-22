@@ -5,8 +5,24 @@ const { FestaCrawler } = require('controllers')
 
 const crawledsResolvers = {
   Query: {
-    crawled: async (_, { id }) => await Crawled.findById(id),
-    crawleds: async () => await Crawled.find({}),
+    crawled: async (_, { id }, { authenticated }) => {
+      if (!authenticated) {
+        throw new AuthenticationError('This query should be proceeded after authentication')
+      }
+
+      let crawled = await Crawled.findById(id)
+
+      return crawled
+    },
+    crawleds: async (parent, args, { authenticated }) => {
+      if (!authenticated) {
+        throw new AuthenticationError('This query should be proceeded after authentication')
+      }
+
+      let crawleds = await Crawled.find({})
+
+      return crawleds
+    },
   },
   Mutation: {
     fetchCrawledData: async (parent, args, { authenticated }) => {
@@ -46,10 +62,6 @@ const crawledsResolvers = {
 
 module.exports = {
   crawledsResolvers,
-}
-
-function isInserted(state) {
-  return state.acknowledged
 }
 
 function isDropped(state) {

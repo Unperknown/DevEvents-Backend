@@ -3,7 +3,15 @@ const { Event } = require('models')
 
 const eventsResolvers = {
   Query: {
-    event: async (_, { id }) => await Event.findById(id),
+    event: async (_, { id }, { authenticated }) => {
+      if (!authenticated) {
+        throw new AuthenticationError('This query should be proceeded after authentication')
+      }
+
+      let event = await Event.findById(id)
+
+      return event
+    },
     events: async () => await Event.find({}),
   },
   Mutation: {
