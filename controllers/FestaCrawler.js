@@ -15,6 +15,7 @@ module.exports = {
 
 async function crawlData() {
   const cluster = await Cluster.launch({
+    puppeteerOptions: { args: [ '--no-sandbox', '--disable-setuid-sandbox' ] },
     concurrency: Cluster.CONCURRENCY_CONTEXT,
     maxConcurrency: 3,
   })

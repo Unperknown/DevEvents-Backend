@@ -21,27 +21,27 @@ const crawledsResolvers = {
       let fetched = await Crawled.insertMany(crawled)
 
       return fetched
-    }
-  },
-  addCrawledData: async (_, { crawled, requestor }) => {
-    let state = await Crawled.insertOne(crawled)
-
-    if (!isInserted(state)) {
-      throw new UserInputError('Requested crawled data is inappropriate to fetch to database!')
-    }
-
-    if (requestor) {
-      let _requestor = { name: requestor }
-
-      state = await Requestor.insertOne(_requestor)
-      
+    },
+    addCrawledData: async (_, { crawled, requestor }) => {
+      let state = await Crawled.insertOne(crawled)
+  
       if (!isInserted(state)) {
-        throw new UserInputError('Requestor\'s information was not compeletely fetched to database!')
+        throw new UserInputError('Requested crawled data is inappropriate to fetch to database!')
       }
-    }
-
-    return crawled
-  }
+  
+      if (requestor) {
+        let _requestor = { name: requestor }
+  
+        state = await Requestor.insertOne(_requestor)
+        
+        if (!isInserted(state)) {
+          throw new UserInputError('Requestor\'s information was not compeletely fetched to database!')
+        }
+      }
+  
+      return crawled
+    },
+  },
 }
 
 module.exports = {
