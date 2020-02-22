@@ -1,4 +1,4 @@
-const { ApolloError, UserInputError } = require('apollo-server-koa')
+const { AuthenticationError, ApolloError } = require('apollo-server-koa')
 
 const { Crawled, Requestor } = require('models')
 const { FestaCrawler } = require('controllers')
@@ -9,7 +9,11 @@ const crawledsResolvers = {
     crawleds: async () => await Crawled.find({}),
   },
   Mutation: {
-    fetchCrawledData: async () => {
+    fetchCrawledData: async (parent, args, { authenticated }) => {
+      if (!authenticated) {
+        throw new AuthenticationError('This mutation should be proceeded after authentication')
+      }
+      
       let crawled = await FestaCrawler.fetch()
 
       let state = await Crawled.deleteMany({})
@@ -23,20 +27,16 @@ const crawledsResolvers = {
       return fetched
     },
     addCrawledData: async (_, { crawled, requestor }) => {
-      let state = await Crawled.insertOne(crawled)
-  
-      if (!isInserted(state)) {
-        throw new UserInputError('Requested crawled data is inappropriate to fetch to database!')
-      }
+      const newData = new Crawled(crawled)
+
+      await newData.save()
   
       if (requestor) {
         let _requestor = { name: requestor }
   
-        state = await Requestor.insertOne(_requestor)
+        const newRequestor = new Requestor(_requestor)
         
-        if (!isInserted(state)) {
-          throw new UserInputError('Requestor\'s information was not compeletely fetched to database!')
-        }
+        await newRequestor.save()
       }
   
       return crawled

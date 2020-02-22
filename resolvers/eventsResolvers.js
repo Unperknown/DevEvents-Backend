@@ -1,4 +1,4 @@
-const { UserInputError } = require('apollo-server-koa')
+const { AuthenticationError, UserInputError } = require('apollo-server-koa')
 const { Event } = require('models')
 
 const eventsResolvers = {
@@ -7,14 +7,22 @@ const eventsResolvers = {
     events: async () => await Event.find({}),
   },
   Mutation: {
-    addEvent: async (_, { event }) => {
+    addEvent: async (_, { event }, { authenticated }) => {
+      if (!authenticated) {
+        throw new AuthenticationError('This mutation should be proceeded after authentication')
+      }
+
       const newEvent = new Event(event)
 
       await newEvent.save()
 
       return event
     },
-    updateEvent: async (_, { id, event }) => {
+    updateEvent: async (_, { id, event }, { authenticated }) => {
+      if (!authenticated) {
+        throw new AuthenticationError('This mutation should be proceeded after authentication')
+      }
+
       let state = await Event.updateOne({ _id: id }, { $set: event })
 
       if (!isUpdated(state)) {
@@ -25,7 +33,11 @@ const eventsResolvers = {
       
       return updated
     },
-    removeEvent: async (_, { id }) => {
+    removeEvent: async (_, { id }, { authenticated }) => {
+      if (!authenticated) {
+        throw new AuthenticationError('This mutation should be proceeded after authentication')
+      }
+      
       let result = await Event.findOneAndDelete({ _id: id })
 
       if (!isRemoved(result)) {

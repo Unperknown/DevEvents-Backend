@@ -6,12 +6,12 @@
   "repository": "https://github.com/Unperknown/DevEvents-Backend.git",
   "author": "Unperknown",
   "license": "MIT",
-  "private": true,
   "dependencies": {
     "@koa/cors": "^3.0.0",
     "apollo-server-koa": "^2.10.1",
     "cheerio": "^1.0.0-rc.3",
     "dotenv": "^8.2.0",
+    "graphql": "^14.6.0",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",

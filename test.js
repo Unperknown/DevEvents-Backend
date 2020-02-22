@@ -13,6 +13,7 @@ const { resolvers } = require('./resolvers')
 
 const config = {
   hostname: process.env.HOSTNAME || 'localhost',
+  admin_code: process.env.ADMIN_CODE || 'CENSORED',
   mongodb_uri: process.env.MONGODB_URI || `mongodb://localhost:27017/DevEvents`,
   port: process.env.PORT || 8080,
 }
@@ -22,6 +23,18 @@ const router = new Router()
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: ({ ctx }) => {
+    const entered = ctx.request.headers['authentication'] || ''
+    let response = {
+      authenticated: false
+    }
+
+    if (entered === config.admin_code) {
+      response.authenticated = true
+    }
+
+    return response
+  },
 })
 
 mongoose.Promise = global.Promise
