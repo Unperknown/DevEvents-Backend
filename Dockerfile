@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 
-RUN npm install -g nodemon
+RUN npm install -g pm2
 
 WORKDIR /app
 
@@ -14,4 +14,4 @@ COPY . /app
 
 EXPOSE 8080
 
-CMD [ "npm", "start:dev" ]
+CMD [ "npm", "start:production" ]
