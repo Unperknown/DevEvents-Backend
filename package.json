@@ -12,7 +12,6 @@
     "apollo-server-koa": "^2.10.1",
     "cheerio": "^1.0.0-rc.3",
     "dotenv": "^8.2.0",
-    "https": "^1.0.0",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
@@ -22,7 +21,7 @@
     "puppeteer-cluster": "^0.19.0"
   },
   "scripts": {
-    "start:dev": "NODE_PATH=./ nodemon main.js",
-    "start:production": "NODE_PATH=./ nodemon main.js"
+    "start:dev": "NODE_PATH=./ nodemon test.js",
+    "start:production": "NODE_PATH=./ pm2 start main.js"
   }
 }

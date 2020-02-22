@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const fs = require('fs')
 const path = require('path')
+const http2 = require('http2')
 const https = require('https')
 
 const Koa = require('koa')
@@ -18,6 +19,13 @@ const { resolvers } = require('./resolvers')
 const config = {
   hostname: process.env.HOSTNAME || 'CENSORED',
   mongodb_uri: process.env.MONGODB_URI || `mongodb://${process.env.HOSTNAME}:27017/DevEvents`,
+  http2: {
+    port: process.env.HTTP2_PORT || 80,
+    options: {
+      key: fs.readFileSync(path.resolve(process.cwd(), `certs/${process.env.HOSTNAME}.key`), 'utf8').toString(),
+      cert: fs.readFileSync(path.resolve(process.cwd(), `certs/${process.env.HOSTNAME}.crt`), 'utf8').toString(),
+    },
+  },
   https: {
     port: process.env.HTTPS_PORT || 443,
     options: {
@@ -53,11 +61,17 @@ app.use(cors())
   .use(router.routes())
   .use(router.allowedMethods())
 
+http2.createServer(config.http2.options, app.callback())
+  .listen(config.http2.port, () => {
+    console.log(`HTTP Server is ready at http://${config.hostname}`)
+    console.log(`HTTP GraphiQL is ready at http://${config.hostname}${server.graphqlPath}`)
+  })
+
 https.createServer(config.https.options, app.callback())
   .listen(config.https.port, () => {
-  console.log(`Server is ready at https://${config.hostname}`)
-  console.log(`GraphiQL is ready at https://${config.hostname}${server.graphqlPath}`)
-})
+    console.log(`HTTPS Server is ready at https://${config.hostname}`)
+    console.log(`HTTPS GraphiQL is ready at https://${config.hostname}${server.graphqlPath}`)
+  })
 
 app.on('error', err => {
   log.error('Server Error', err)
