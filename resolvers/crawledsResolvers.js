@@ -1,8 +1,6 @@
-const _ = require('lodash')
+const { ApolloError, UserInputError } = require('apollo-server-koa')
 
-const { ApolloError } = require('apollo-server-koa')
-
-const { Crawled } = require('models')
+const { Crawled, Requestor } = require('models')
 const { FestaCrawler } = require('controllers')
 
 const crawledsResolvers = {
@@ -24,11 +22,34 @@ const crawledsResolvers = {
 
       return fetched
     }
+  },
+  addCrawledData: async (_, { crawled, requestor }) => {
+    let state = await Crawled.insertOne(crawled)
+
+    if (!isInserted(state)) {
+      throw new UserInputError('Requested crawled data is inappropriate to fetch to database!')
+    }
+
+    if (requestor) {
+      let _requestor = { name: requestor }
+
+      state = await Requestor.insertOne(_requestor)
+      
+      if (!isInserted(state)) {
+        throw new UserInputError('Requestor\'s information was not compeletely fetched to database!')
+      }
+    }
+
+    return crawled
   }
 }
 
 module.exports = {
   crawledsResolvers,
+}
+
+function isInserted(state) {
+  return state.acknowledged
 }
 
 function isDropped(state) {

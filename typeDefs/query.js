@@ -7,6 +7,8 @@ const query = gql`
     
     event(id: String): Event
     events: [Event]
+
+    requestors: [Requestor]
   }
 `
 
