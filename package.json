@@ -14,7 +14,7 @@
     "graphql": "^14.6.0",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
-    "koa-router": "^7.4.0",
+    "koa-router": "^8.0.8",
     "lodash": "^4.17.15",
     "mongoose": "^5.8.12",
     "puppeteer": "^2.1.1",
@@ -22,6 +22,6 @@
   },
   "scripts": {
     "start:dev": "NODE_PATH=./ nodemon test.js",
-    "start:production": "NODE_PATH=./ pm2 start main.js"
+    "start:production": "NODE_PATH=./ pm2 start main.js --name DevEvents"
   }
 }
