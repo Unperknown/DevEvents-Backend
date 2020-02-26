@@ -71,7 +71,7 @@ app.use(cors())
   .use(router.allowedMethods())
 
 http.createServer((req, res) => {
-  res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url })
+  res.writeHead(301, { 'Location': `https://${req.headers['host']}${req.url}` })
   res.end()
 }).listen(config.http.port)
 
@@ -82,5 +82,5 @@ https.createServer(config.https.options, app.callback())
   })
 
 app.on('error', err => {
-  log.error('Server Error', err)
+  log.error('Error occured on server!', err)
 })
