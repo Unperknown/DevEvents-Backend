@@ -10,6 +10,8 @@ const Router = require('koa-router')
 const koaBody = require('koa-bodyparser')
 const cors = require('@koa/cors')
 
+const { errorHandling } = require('./middlewares')
+
 const mongoose = require('mongoose')
 
 const { ApolloServer } = require('apollo-server-koa')
@@ -65,7 +67,8 @@ mongoose.connect(config.mongodb_uri, {
 
 server.applyMiddleware({ app })
 
-app.use(cors())
+app.use(errorHandling())
+  .use(cors())
   .use(koaBody())
   .use(router.routes())
   .use(router.allowedMethods())
